@@ -6,9 +6,18 @@ import random
 from PIL import Image
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 from tqdm import tqdm_notebook
 
-path = "~/Projects/PycharmProjects/data/train/"
+#print("Path to data: ")
+#path = input()
+
+begin = "\n------BEGIN------\n"
+end = "\n-------END-------\n"
+
+path = "/Users/pterekhov/Projects/PycharmProjects/ML_SSU/data/train"
+print("Path to data:", path)
+
 train_directory = pathlib.Path(path)
 sample_size = 5000
 STUDENT_ID = "PTerekhov-412"
@@ -61,13 +70,23 @@ def read_data(target_df):
 initialize_random_seed()
 
 target_df = read_target_variable()
-print(target_df)
+print(target_df, '\n')
 
 features, target = read_data(target_df)
-print(features)
+print(features, '\n')
 
-train, test = train_test_split(features, test_size=0.4)
-valid = train_test_split(test, test_size=0.5)
+f_train, f_test = train_test_split(features, test_size=0.4, random_state=42)
+f_valid, _ = train_test_split(f_test, test_size=0.5)
 
-model = linear_model.SGDClassifier(shuffle=True,max_iter=1000, tol=1e-3)
-model.fit(train,test)
+
+print('\n', "features", '\n')
+print(f_train, '\n')
+print(f_test, '\n')
+print(f_valid, '\n')
+
+model = linear_model.SGDClassifier(shuffle=True, max_iter=1000, tol=1e-3).fit(f_train, features)
+
+predictions = model.predict(features)
+accuracy = accuracy_score(predictions, f_test)
+
+print(accuracy)
