@@ -7,16 +7,17 @@ from PIL import Image
 from sklearn import linear_model
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm_notebook
 
-#print("Path to data: ")
-#path = input()
+print("Path to data: ")
+path = input()
 
 begin = "\n------BEGIN------\n"
 end = "\n-------END-------\n"
 
-path = "/Users/pterekhov/Projects/PycharmProjects/ML_SSU/data/train"
-print("Path to data:", path)
+#path = "/Users/pterekhov/Projects/PycharmProjects/ML_SSU/data/train"
+#print("Path to data:", path)
 
 train_directory = pathlib.Path(path)
 sample_size = 5000
@@ -75,18 +76,39 @@ print(target_df, '\n')
 features, target = read_data(target_df)
 print(features, '\n')
 
-f_train, f_test = train_test_split(features, test_size=0.4, random_state=42)
-f_valid, _ = train_test_split(f_test, test_size=0.5)
+X_train, X_test, y_train, y_test = train_test_split(features, target, test_size = 0.4)
+X_test, X_val, y_test, y_val = train_test_split(X_test, y_test, test_size = 0.5)
 
 
-print('\n', "features", '\n')
-print(f_train, '\n')
-print(f_test, '\n')
-print(f_valid, '\n')
+model = linear_model.SGDRegressor(max_iter=1000, tol=1e-3, learning_rate='optimal').fit(X_train, y_train)
 
-model = linear_model.SGDClassifier(shuffle=True, max_iter=1000, tol=1e-3).fit(f_train, features)
+predictions1 = model.predict(X_val)
+predictions1 = [prediction >= 0.5 for prediction in predictions1]
 
-predictions = model.predict(features)
-accuracy = accuracy_score(predictions, f_test)
+predictions2 = model.predict(X_test)
+predictions2 = [prediction >= 0.5 for prediction in predictions2]
 
-print(accuracy)
+predictions3 = model.predict(X_train)
+predictions3 = [prediction >= 0.5 for prediction in predictions2]
+
+accuracy1 = accuracy_score(y_val, predictions1)
+accuracy2 = accuracy_score(y_test, predictions2)
+accuracy3 = accuracy_score(y_train, predictions3)
+
+print("accuracy1: ", accuracy1, '\n')
+print("accuracy2: ", accuracy2, '\n')
+print("accuracy3: ", accuracy3, '\n')
+
+scaler = StandardScaler()
+
+new_train = scaler.fit_transform(X_train)
+new_val = scaler.fit_transform(X_val)
+new_test = scaler.transform(X_test)
+
+new_model = linear_model.SGDRegressor(max_iter=1000, tol=1e-3, learning_rate='optimal').fit(new_train, y_train)
+
+new_predictions = new_model.predict(new_test)
+new_predictions = [prediction >= 0.5 for prediction in new_predictions]
+new_accuracy = accuracy_score(y_test, new_predictions)
+
+print("new_accuracy: ", new_accuracy, '\n')
