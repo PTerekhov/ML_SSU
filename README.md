@@ -2,7 +2,7 @@ task1 - finished;
 task2 - finished;
 task3 - finished;
 task4 - finished;
-task5 - waiting;
+task5 - finished;
 task6 - waiting;
 
 Realtime detection:

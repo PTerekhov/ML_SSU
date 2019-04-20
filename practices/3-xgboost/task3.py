@@ -1,7 +1,5 @@
-import pandas as pd
 from glob import glob
 import os
-from PIL import Image
 import numpy as np
 import random
 from keras.applications.resnet50 import ResNet50
@@ -15,6 +13,7 @@ random.seed(42)
 
 print("Path to data: ")
 path = input()
+
 #path = "/Users/pterekhov/Projects/PycharmProjects/ML_SSU/data"
 
 def read_dataset(path):
