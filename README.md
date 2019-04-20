@@ -1,6 +1,6 @@
 task1 - finished;
 task2 - finished;
-task3 - in progress;
+task3 - finished;
 task4 - finished;
 task5 - waiting;
 task6 - waiting;
